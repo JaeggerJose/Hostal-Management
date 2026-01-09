@@ -1,0 +1,104 @@
+openapi: 3.0.0
+info:
+  title: Hostal Management API
+  version: 1.0.0
+  description: API for Booking Dashboard and Synchronization
+paths:
+  /api/sync:
+    post:
+      summary: Trigger Synchronization with Booking.com
+      description: Fetches iCal feeds for all rooms and updates local bookings.
+      security:
+        - cron_auth: []
+      responses:
+        '200':
+          description: Sync successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  synced_count:
+                    type: integer
+                  conflicts:
+                    type: integer
+  /api/bookings:
+    get:
+      summary: List Bookings
+      parameters:
+        - name: start_date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: end_date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: List of bookings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+    post:
+      summary: Create Manual Booking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingInput'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+
+components:
+  schemas:
+    Booking:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        room_id:
+          type: string
+          format: uuid
+        guest_name:
+          type: string
+        check_in:
+          type: string
+          format: date
+        check_out:
+          type: string
+          format: date
+        status:
+          type: string
+          enum: [confirmed, cancelled, conflict]
+    BookingInput:
+      type: object
+      properties:
+        room_id:
+          type: string
+          format: uuid
+        guest_name:
+          type: string
+        guest_id:
+          type: string
+          format: uuid
+        check_in:
+          type: string
+          format: date
+        check_out:
+          type: string
+          format: date
