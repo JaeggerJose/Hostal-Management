@@ -8,6 +8,7 @@ export const zhTW = {
     search: '搜尋',
     add: '新增',
     back: '返回',
+    close: '關閉',
     confirm: '確認',
     error: '發生錯誤',
     success: '成功',
