@@ -67,9 +67,15 @@ export const GuestService = {
   },
 
   async deleteGuest(id: string) {
-    // Optional: Check for existing bookings before deleting?
-    // For now, assuming direct deletion. If FK constraint exists without cascade, this might fail.
-    // Ideally, we should check or warn.
+    // 1. Unlink bookings first (set guest_id to null) to avoid FK constraint violation
+    const { error: unlinkError } = await supabase
+      .from('bookings')
+      .update({ guest_id: null })
+      .eq('guest_id', id);
+
+    if (unlinkError) throw unlinkError;
+
+    // 2. Delete the guest
     const { error } = await supabase
       .from('guests')
       .delete()

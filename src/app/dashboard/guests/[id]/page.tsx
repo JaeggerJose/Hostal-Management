@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { Guest, Booking } from '@/types';
 import { GuestService } from '@/services/guest';
 import { zhTW } from '@/lib/i18n/zh-tw';
@@ -11,6 +11,7 @@ import GuestForm from '@/components/guests/GuestForm';
 
 export default function GuestDetailPage() {
   const { id } = useParams();
+  const router = useRouter();
   const [guest, setGuest] = useState<Guest | null>(null);
   const [history, setHistory] = useState<Booking[]>([]);
   const [isEditOpen, setIsEditOpen] = useState(false);
